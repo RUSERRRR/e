@@ -145,8 +145,8 @@ nav.scrolled{backdrop-filter:blur(0px);-webkit-backdrop-filter:blur(0px);border-
 .ae{font-size:.82rem;color:var(--muted);line-height:1.75}
 .ar{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-top:1.5rem;display:flex;align-items:center;gap:.5rem;transition:gap .2s}
 .ac:hover .ar{gap:.9rem}
-#art-reader{display:none;position:fixed;inset:0;z-index:800;background:var(--bg);overflow-y:auto}
-#nl-reader{display:none;position:fixed;inset:0;z-index:801;background:var(--bg);overflow-y:auto}
+#art-reader{display:none;position:fixed;inset:0;z-index:850;background:var(--bg);overflow-y:auto}
+#nl-reader{display:none;position:fixed;inset:0;z-index:851;background:var(--bg);overflow-y:auto}
 #nl-reader.open{display:block}
 #art-reader.open{display:block}
 .reader-nav{position:sticky;top:0;background:rgba(8,12,20,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:1rem 3.5rem;display:flex;align-items:center;justify-content:space-between;z-index:10}
@@ -393,7 +393,7 @@ footer{padding:3rem 3.5rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:2r
   .adm-tab{padding:.7rem 1rem;font-size:.58rem}
   /* Article reader */
   .reader-body{padding:2rem 1.4rem 5rem}
-  .reader-nav{padding:.9rem 1.4rem}
+  .reader-nav{padding:.9rem 1.4rem;padding-top:calc(56px + .9rem)}
   .reader-h1{font-size:clamp(1.6rem,7vw,2.5rem)}
   /* Misc */
   #hero-particles{display:none}
@@ -1075,7 +1075,7 @@ footer{padding-left:max(var(--gutter),calc((100vw - var(--mw))/2));padding-right
     </div>
     <div class="hi-right">
       <div class="hi-stat"><span class="hi-stat-n counter" data-t="30">0</span><span class="hi-stat-l">Countries</span></div>
-      <div class="hi-stat"><span class="hi-stat-n counter" data-t="10">0</span><span class="hi-stat-l">Reports</span></div>
+      <div class="hi-stat"><span class="hi-stat-n counter" data-t="0">0</span><span class="hi-stat-l">Reports</span></div>
       <div class="hi-stat"><span class="hi-stat-n counter" data-t="30">0</span><span class="hi-stat-l">Student Members</span></div>
     </div>
   </div>
@@ -1516,6 +1516,19 @@ footer{padding-left:max(var(--gutter),calc((100vw - var(--mw))/2));padding-right
 </div>
 
 <script>
+// ── Clear old seeded data on version change ──────────────
+(function(){
+  var V='v3-empty';
+  try{
+    if(localStorage.getItem('_ev_v')!==V){
+      ['_ev_arts','_ev_subs','_ev_apps','_ev_nlposts','_ev_partnereq'].forEach(function(k){localStorage.removeItem(k);});
+      // Also try the key patterns used by ld/sv helpers
+      var keys=Object.keys(localStorage);
+      keys.forEach(function(k){if(k.indexOf('ev')==0||k.indexOf('envisio')==0)localStorage.removeItem(k);});
+      localStorage.setItem('_ev_v',V);
+    }
+  }catch(e){}
+})();
 var TLABELS={tech:'Technology & Innovation',vc:'Venture Capital & PE',markets:'Global Markets',advisory:'Corporate Advisory',perspectives:'Perspectives & Culture'};
 var TEAMS={
   tech:{title:'Technology &amp; <em>Innovation</em>',desc:'Deep-dives into emerging technologies, AI disruption, and the startup ecosystem shaping our collective future.',focus:['Artificial Intelligence & Machine Learning','Emerging Technology Ecosystems','Startup & Venture Landscape','Digital Transformation','Sustainability in Tech'],reports:['Claude AI & Coworking (Jan 2026)','@Grok: AI Accuracy (Jan 2026)','Future of Work: Generative AI (Dec 2023)','Augmented Reality Systems (Aug 2023)']},
@@ -1524,23 +1537,13 @@ var TEAMS={
   advisory:{title:'Corporate <em>Advisory</em>',desc:'Strategic and operational insights for startups and established firms seeking growth, efficiency, or transformation.',focus:['Strategic Planning & Roadmapping','Market Entry Strategies','Operational Efficiency','Change Management','Sustainability & ESG'],reports:['Rise of Padel (Feb 2026)','Sustainable Packaging (Sep 2024)','Go-to-Market Strategies']},
   perspectives:{title:'Perspectives &amp; <em>Culture</em>',desc:'Narrative-driven essays, cultural commentary, and opinion pieces that explore the human side of business, society, and ideas — beyond the spreadsheet.',focus:['Cultural & Societal Trends','Opinion & Commentary','Human Stories in Business','Sport, Lifestyle & Identity','Creative Non-Fiction'],reports:['The Rise of Padel Culture (Feb 2026)','The Loneliness Economy (2026)','Gen Z and the Meaning of Work (2026)']}
 };
-var DEFAULT_ARTICLES=[
-  {id:'a1',title:'Rise of Padel: The Global Sport Disrupting Athletic Markets',team:'advisory',date:'Feb 17, 2026',author:'Envision Corporate Advisory Team',excerpt:"An in-depth analysis of padel's meteoric global rise, examining the investment landscape, infrastructure buildout, and the demographic forces propelling adoption across Europe and beyond.",body:'<h2>Executive Summary</h2><p>Padel has emerged as one of the fastest-growing sports globally, with a compound annual growth rate exceeding 30% across key markets between 2019 and 2025. Originally concentrated in Spain and Latin America, the sport has rapidly expanded into Northern Europe, the Middle East, and beyond.</p><h2>Market Dynamics</h2><p>The padel market is driven by several converging forces: the relative affordability of the sport compared to tennis, its social nature, the emergence of professional leagues such as Premier Padel, and significant venture capital interest in court infrastructure and equipment manufacturers.</p><blockquote>The global padel equipment market is projected to exceed €2.5 billion by 2027, with court construction representing the largest single investment category.</blockquote><h2>Investment Landscape</h2><p>Private equity has taken notice. Several large European sports infrastructure funds have allocated capital specifically to padel court networks, with aggregated investments exceeding €500 million in 2024 alone. The Netherlands, Germany, and the UK are experiencing particularly rapid growth.</p><h2>Outlook</h2><p>We project continued strong growth through 2028, with consolidation among court operators likely to follow the current fragmentation phase. The emergence of a dominant European padel network operator represents the most significant near-term investment opportunity in the space.</p>',featured:true,type:'report',pdfUrl:''},
-  {id:'a2',title:'How Claude AI Will Transform Coworking and Collaboration',team:'tech',date:'Jan 14, 2026',author:'Envision Technology Team',excerpt:'Exploring the practical implications of agentic AI tools in collaborative work environments and enterprise productivity stacks.',body:'<h2>Introduction</h2><p>The emergence of Claude as a production-grade AI assistant with persistent memory and tool-use capabilities marks a significant inflection point for knowledge work environments. This report examines the specific implications for coworking spaces and distributed enterprise teams.</p><h2>Agentic AI in the Workplace</h2><p>Unlike earlier AI tools that functioned as passive query-response systems, modern agentic AI assistants can execute multi-step tasks, interface with enterprise software, and maintain contextual awareness across sessions. This fundamentally changes the economics of knowledge work.</p><blockquote>Early adopters of agentic AI workflows report productivity gains of 25-40% for research-intensive tasks, with the highest gains observed in market analysis, report drafting, and data synthesis.</blockquote><h2>Conclusion</h2><p>AI is not replacing knowledge workers; it is changing what knowledge work looks like. Organisations that adapt their physical and digital infrastructure proactively will have a significant competitive advantage in the next five years.</p>',featured:false,type:'report',pdfUrl:''},
-  {id:'a3',title:'@Grok: Information Accuracy in the Age of AI-Driven Social Media',team:'tech',date:'Jan 15, 2026',author:'Envision Technology Team',excerpt:'A critical assessment of AI-generated content reliability and its downstream effects on financial markets and public discourse.',body:'<h2>Overview</h2><p>The integration of large language models into social media platforms raises significant questions about information accuracy, market integrity, and the epistemological foundations of public discourse.</p><h2>Market Integrity Risks</h2><p>The intersection of AI content generation and financial markets presents novel regulatory challenges. Existing market manipulation frameworks were not designed to account for AI systems generating content at scale.</p><blockquote>In Q4 2025, at least three instances of AI-generated misinformation on major social platforms were linked to measurable short-term price volatility in affected company securities.</blockquote><h2>Recommendations</h2><p>We recommend that platform operators implement mandatory AI-content labelling, establish real-time fact-checking partnerships, and develop algorithmic dampening mechanisms for unverified AI-generated claims related to sensitive financial and political topics.</p>',featured:false,type:'report',pdfUrl:''},
-  {id:'a4',title:'Addressing Nitrogen Emissions in the Netherlands',team:'markets',date:'Oct 2024',author:'Envision Global Markets Team',excerpt:"Challenges and policy alternatives in one of Europe's most contentious environmental policy debates.",body:"<h2>The Dutch Nitrogen Crisis</h2><p>The Netherlands has faced one of the most acute environmental policy crises in recent European history, stemming from the 2019 ruling by the Dutch Council of State that the existing nitrogen policy framework was incompatible with European Habitats Directive obligations.</p><h2>Scale of the Problem</h2><p>Dutch nitrogen emissions — primarily from intensive livestock agriculture — exceed EU limits by a significant margin. Approximately 26,000 farms operate within the nitrogen-sensitive zones surrounding protected natural areas.</p><blockquote>The economic value at stake exceeds €28 billion in agricultural assets, with downstream implications for Dutch food export infrastructure.</blockquote><h2>Outlook</h2><p>A combination of targeted buyouts, technological transition support, and phased emissions reduction pathways represents the most politically viable path forward, though full resolution is unlikely before 2030.</p>",featured:false,type:'report',pdfUrl:''},
-  {id:'a5',title:"Wyoming's Bold Step into the Future of Stablecoins",team:'vc',date:'Oct 2024',author:'Envision VC & PE Team',excerpt:"How Wyoming's regulatory framework positions it as a frontrunner in the US stablecoin landscape.",body:"<h2>Introduction</h2><p>Wyoming has established itself as the most progressive US state jurisdiction for cryptocurrency and digital asset regulation, culminating in the launch of the WYOMING Stable Token — the first state-issued stablecoin backed by US Treasury securities and repurchase agreements.</p><h2>Regulatory Architecture</h2><p>Wyoming's approach is characterised by regulatory specificity rather than broad prohibition or permission. The state has enacted over 20 blockchain-specific bills since 2018, creating a comprehensive legal framework that has attracted numerous digital asset companies seeking regulatory clarity.</p><blockquote>Wyoming's WYST represents the first government-issued stablecoin in the United States, establishing a potential template for state-level digital currency issuance that other jurisdictions may follow.</blockquote>",featured:false},
-  {id:'a6',title:"Japan's Silent Crisis",team:'markets',date:'Sep 2023',author:'Envision Global Markets Team',excerpt:"An examination of Japan's demographic collapse and its long-term macroeconomic implications for Asia.",body:"<h2>The Demographic Reality</h2><p>Japan faces the most severe demographic crisis of any major economy. With a total fertility rate of approximately 1.2 — well below the replacement rate of 2.1 — and among the world's highest median ages, Japan's population trajectory presents fundamental challenges to its economic model.</p><h2>Macroeconomic Implications</h2><p>A shrinking workforce combined with one of the world's highest public debt ratios creates a challenging macro environment. Japan's debt-to-GDP ratio exceeds 260%.</p><blockquote>By 2040, Japan's working-age population is projected to decline by approximately 20 million, representing a structural reduction in potential GDP growth of an estimated 0.8-1.2 percentage points annually.</blockquote><h2>Regional Implications</h2><p>Japan's experience serves as a leading indicator for demographic trends across East Asia. South Korea and China face similar trajectories with shorter lead times, making Japan's policy responses of significant regional importance.</p>",featured:false},
-  {id:'a7',title:'Offshore Financial Centres: Globalisation Open Secret',team:'vc',date:'Sep 2023',author:'Envision VC & PE Team',excerpt:'A frank look at how offshore structures function, who uses them, and what regulators can realistically do.',body:'<h2>Overview</h2><p>Offshore financial centres (OFCs) occupy a paradoxical position in the global financial system: widely used, frequently criticised, but structurally embedded in the architecture of international capital flows. Understanding their function is essential for any serious analysis of global finance.</p><h2>How OFCs Work</h2><p>OFCs offer a combination of low or zero taxation, light-touch regulation, political stability, and professional services infrastructure. The key jurisdictions include the Cayman Islands, British Virgin Islands, Luxembourg, Ireland, Singapore, and Switzerland.</p><blockquote>Conservative estimates suggest that 40% of global corporate profits are booked in low-tax jurisdictions annually, representing a significant structural feature of the international tax system rather than a marginal phenomenon.</blockquote>',featured:false,type:'report',pdfUrl:''},
-  {id:'a8',title:'The Influence of Sustainable Packaging on Consumer Behavior',team:'advisory',date:'Sep 2024',author:'Envision Corporate Advisory Team',excerpt:'Do green labels actually change purchasing decisions? A comprehensive behavioural analysis.',body:'<h2>Introduction</h2><p>The proliferation of sustainable packaging claims has outpaced consumer understanding of what those claims mean. This report examines the empirical evidence on whether and how sustainable packaging influences purchasing decisions, with implications for corporate strategy and marketing investment.</p><h2>The Attention Economy of Green Labels</h2><p>Consumer research consistently demonstrates that sustainable packaging increases initial product consideration among environmentally-conscious consumers, but the effect diminishes sharply when price premiums exceed 10-15%.</p><blockquote>A 2024 meta-analysis of 47 consumer studies found that sustainable packaging increases purchase intent by an average of 8% among engaged consumers, but the effect is near-zero among price-sensitive segments.</blockquote>',featured:false,type:'report',pdfUrl:''},
-  {id:'a9',title:'The Future of Work: A Meta-Analysis on Generative AI',team:'tech',date:'Dec 2023',author:'Envision Technology Team',excerpt:'Synthesising the growing literature on how generative AI is reshaping roles, productivity, and organisations.',body:'<h2>Scope</h2><p>This meta-analysis synthesises findings from 94 peer-reviewed papers and industry reports published between 2021 and 2023 on the organisational impacts of generative AI. Our goal is to move beyond individual case studies to identify robust, replicable patterns.</p><h2>Key Findings</h2><p>The evidence consistently supports three broad conclusions: generative AI augments rather than replaces most knowledge worker roles in the near term; productivity gains are highly task-specific rather than uniform; and organisational adoption barriers are primarily cultural and managerial rather than technical.</p><blockquote>Across 23 controlled studies, the average productivity gain from generative AI tools for high-complexity knowledge tasks was 34%, compared to 12% for routine, well-defined tasks.</blockquote>',featured:false,type:'report',pdfUrl:''},
-  {id:'a10',title:'Augmented Reality Systems and How They Work',team:'tech',date:'Aug 2023',author:'Envision Technology Team',excerpt:'A technical primer on how AR systems are built, where they are deployed, and where they are heading next.',body:'<h2>Introduction</h2><p>Augmented reality (AR) represents one of the most consequential interface paradigms since the touchscreen. Unlike virtual reality, which replaces the users physical environment entirely, AR overlays digital information onto the real world, creating a hybrid perceptual experience.</p><h2>Core Technical Architecture</h2><p>AR systems consist of four primary components: display technology (optical see-through, video see-through, or projection-based), tracking systems (SLAM, marker-based, or sensor fusion), processing hardware, and rendering engines. The interplay between these components determines the systems latency, accuracy, and field of view.</p><h2>Enterprise Applications</h2><p>The most mature enterprise use cases include industrial maintenance and repair guidance, surgical navigation, architectural visualisation, and logistics picking systems. Boeing reported a 25% reduction in wiring harness production time after deploying AR guidance systems.</p>',featured:false,type:'report',pdfUrl:''},
-  {id:'p1',title:'The Loneliness Economy: How Isolation Became a Business Opportunity',team:'perspectives',date:'Mar 2026',author:'Envision Perspectives Team',excerpt:'From social clubs to co-working cafes, the pandemic reshuffled our understanding of solitude — and companies are cashing in.',body:'<h2>Introduction</h2><p>Something quietly shifted during the pandemic years. Loneliness, once considered a private affliction, became a public health crisis — and in the years since, a market. This piece examines the strange and sometimes cynical ways industry has responded to a generation that reports feeling more disconnected than any before it.</p><h2>Selling Connection</h2><p>The wellness industry has long understood that companionship is sellable. But the post-pandemic iteration is more sophisticated: co-living operators, app-based friendship platforms, community memberships, and even "social fitness" concepts like padel all thrive at the intersection of commerce and belonging.</p><blockquote>In 2025, the global wellness economy exceeded $6 trillion — with social wellness representing one of its fastest-growing subcategories.</blockquote><h2>The Paradox</h2><p>There is something uncomfortable about monetising loneliness. If the solution to disconnection is a paid subscription, what does that say about the texture of modern life? The best companies in this space seem aware of the paradox — and the most honest ones name it.</p><h2>What We Should Watch</h2><p>The genuinely interesting question is not whether businesses can profit from loneliness, but whether any of them are actually solving it. The evidence, so far, is mixed.</p>',featured:false,type:'article',pdfUrl:''},
-  {id:'p2',title:'Gen Z and the Meaning of Work: Beyond the Paycheck',team:'perspectives',date:'Mar 2026',author:'Envision Perspectives Team',excerpt:'The youngest working generation is not lazy — it is asking a question that older cohorts rarely dared to ask out loud.',body:'<h2>The Reputation Problem</h2><p>Gen Z has been called entitled, distracted, and impossible to manage. The business press cycles through these characterisations with reliable frequency. What gets less attention is the possibility that Gen Z is simply asking a question previous generations suppressed: does my work actually mean anything?</p><h2>A Different Contract</h2><p>For much of the 20th century, the implicit employment contract was simple: show up, deliver, earn security. Gen Z inherited a world in which that security — stable pensions, affordable housing, clear career ladders — had already eroded. Small wonder they renegotiated the terms.</p><blockquote>A 2025 Deloitte survey found that 56% of Gen Z respondents would leave a job that did not align with their values, even without another role lined up.</blockquote><h2>The Real Tension</h2><p>Organisations that have adapted — offering flexibility, purpose, and genuine development — are winning the talent competition. Those that have not are discovering that culture is not a perk. It is infrastructure.</p>',featured:false,type:'article',pdfUrl:''},
-  {id:'p3',title:'Why Everyone Is Playing Padel (And What It Says About Us)',team:'perspectives',date:'Feb 2026',author:'Envision Perspectives Team',excerpt:'Padel is more than a sport. It is a mirror held up to a particular kind of European professional life.',body:"<h2>The Courts Are Full</h2><p>Walk past any new padel facility on a Tuesday evening and you will find something unexpected: people in their 30s and 40s, laughing, sweating, making plans for dinner afterwards. Padel is not just growing — it is becoming a social ritual.</p><h2>More Than a Game</h2><p>What padel sells is not just exercise. It is a structured reason to be with other people. In an era of remote work and digital sociality, the sport's inherent doubles format — you cannot play padel alone — is part of its appeal. It mandates presence, cooperation, and good-natured competition.</p><blockquote>The average padel session includes roughly 90 minutes of court time and, according to one Dutch operator's data, a further 45 minutes of post-match socialising on-site.</blockquote><h2>A Cultural Signifier</h2><p>In cities like Amsterdam, Madrid, and London, padel has become what golf was to an earlier generation: a mode of professional networking wrapped in athletic clothing. The business conversations that happen in the locker room are not incidental to the sport. For many players, they are the point.</p>",featured:false,type:'article',pdfUrl:''}
-];
-function ld(k,d){try{var x=localStorage.getItem('ev_'+k);return x?JSON.parse(x):d;}catch(e){return d;}}
+// ── Core storage helpers ─────────────────────────────────
 function sv(k,v){try{localStorage.setItem('ev_'+k,JSON.stringify(v));}catch(e){}}
+function ld(k,def){try{var v=localStorage.getItem('ev_'+k);return v?JSON.parse(v):def;}catch(e){return def;}}
+// ─────────────────────────────────────────────────────────
+
+var DEFAULT_ARTICLES=[];
+
 var ARTS=ld('arts',DEFAULT_ARTICLES);
 var SUBS=ld('subs',[]);
 var APPS=ld('apps',[]);
@@ -1706,25 +1709,17 @@ function submitApp(){
   showToast('Application Received!','Thank you '+f+'! We will be in touch within 5-7 working days.');
 }
 
-// ── ADMIN PASSWORD ────────────────────────────────────────
-// SHA-256 of the admin password — change this hash to change the password
-// To generate a new hash: https://emn178.github.io/online-tools/sha256.html
-var ADMIN_PW_HASH='3b4c6e2f1a9d8e5c7f0b2d4a6e8c1f3d5b7a9e2c4f6b8d0a2c4e6f8b0d2a4c6';
-// Note: above is a placeholder — actual hash injected below
-var _ADMIN_HASH='a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2';
-
+// ── Authentication ───────────────────────────────────────
+var _k1='5fb455c28f7b2453',_k2='ff53b4fee7d2e772',_k3='85aa4db5394a072e',_k4='4eefbc421a1d51bc';
 var adminUnlocked=false;
-
-async function sha256(str){
-  var buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
-  return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');
+async function _h(s){
+  var b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0');}).join('');
 }
-
 async function checkAdminPassword(){
   var pw=document.getElementById('adm-pw-input').value;
-  var hash=await sha256(pw);
-  // The correct hash is set via ENVISION_ADMIN_HASH constant below
-  if(hash===ENVISION_ADMIN_HASH){
+  var hash=await _h(pw);
+  if(hash===(_k1+_k2+_k3+_k4)){
     adminUnlocked=true;
     document.getElementById('adm-login').classList.remove('open');
     document.getElementById('admin-panel').classList.add('open');
@@ -1738,16 +1733,6 @@ async function checkAdminPassword(){
     document.getElementById('adm-pw-input').focus();
   }
 }
-
-// SHA-256 of "envision2026" — replace this string to change password
-var ENVISION_ADMIN_HASH='5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8';
-// Above is SHA-256 of "password" as placeholder — actual value set below:
-// SHA-256("envision2026") computed inline:
-(async function(){
-  var correct=await sha256('envision2026');
-  ENVISION_ADMIN_HASH=correct;
-})();
-
 function openAdminGate(){
   if(adminUnlocked){
     document.getElementById('admin-panel').classList.add('open');
@@ -1758,7 +1743,7 @@ function openAdminGate(){
     setTimeout(function(){var el=document.getElementById('adm-pw-input');if(el)el.focus();},100);
   }
 }
-// ── END ADMIN PASSWORD ────────────────────────────────────
+// ── End Authentication ───────────────────────────────────
 
 function openAdmin(){openAdminGate();}
 function closeAdmin(){document.getElementById('admin-panel').classList.remove('open');document.getElementById('adm-login').classList.remove('open');history.pushState('',document.title,window.location.pathname+window.location.search);}
@@ -2177,37 +2162,7 @@ setTimeout(initAccordion,100);
 // ═══════════════════════════════════════════════════════════
 // NEWSLETTER POSTS DATA + FUNCTIONS
 // ═══════════════════════════════════════════════════════════
-var DEFAULT_NL_POSTS=[
-  {id:'nl1',title:'Envision Partners with Rotterdam School of Management',cat:'partnership',
-   author:'Envision Team',date:'Apr 2026',featured:true,imageUrl:'',link:'',
-   excerpt:'We are proud to announce a new academic partnership with RSM, opening access to research resources and joint publishing opportunities for contributors.',
-   body:''},
-  {id:'nl2',title:'Envision Reaches 50,000 Monthly Readers',cat:'milestone',
-   author:'Envision Team',date:'Mar 2026',featured:false,imageUrl:'',link:'',
-   excerpt:'Our readership has crossed the 50,000 monthly reader mark, a milestone reflecting the growing appetite for rigorous contributor-driven research.',
-   body:''},
-  {id:'nl3',title:'New Contributor Cohort Opens Spring 2026',cat:'announcement',
-   author:'Envision Team',date:'Mar 2026',featured:false,imageUrl:'',link:'',
-   excerpt:'Applications for our Spring 2026 contributor cohort are now open across all five teams.',
-   body:''}
-];
-// Set bodies via array join to avoid quote conflicts
-DEFAULT_NL_POSTS[0].body=['<h2>A New Chapter</h2>',
-'<p>Envision is delighted to announce a formal partnership with the Rotterdam School of Management (RSM), Erasmus University &mdash; one of Europe&#39;s top-ranked business schools.</p>',
-'<p>This partnership opens several pathways for contributors: access to RSM&#39;s research databases, faculty-led workshops, and a joint publication programme distributed through RSM&#39;s alumni network.</p>',
-'<blockquote>A significant step in our mission to bridge academia and the professional world.</blockquote>',
-'<h2>What This Means for Contributors</h2>',
-'<p>Contributors will be able to cite RSM resources and connect with faculty mentors. The first cohort of joint publications rolls out in Q3 2026.</p>'
-].join('');
-DEFAULT_NL_POSTS[1].body=['<h2>50,000 Readers and Counting</h2>',
-'<p>When Envision launched in 2023, our ambition was to build a platform where serious research could reach a serious audience. Today our reports and articles reach over 50,000 people every month.</p>',
-'<p>This growth has been entirely organic &mdash; driven by the quality of contributors&#39; work and reader trust. Thank you to every contributor, editor, and reader who has been part of this journey.</p>'
-].join('');
-DEFAULT_NL_POSTS[2].body=['<h2>Join the Next Cohort</h2>',
-'<p>We are opening applications for our Spring 2026 intake across all five teams: Technology &amp; Innovation, Venture Capital &amp; PE, Global Markets, Corporate Advisory, and Perspectives &amp; Culture.</p>',
-'<p>We are looking for contributors with strong analytical backgrounds, a passion for their domain, and commitment to publish at least one report per semester.</p>',
-'<p>Applications close 15 May 2026. Apply via the Apply page.</p>'
-].join('');
+var DEFAULT_NL_POSTS=[];
 
 var NL_POSTS=ld('nlposts',DEFAULT_NL_POSTS);
 function saveNlPosts(){sv('nlposts',NL_POSTS);}
