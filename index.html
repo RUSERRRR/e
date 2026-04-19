@@ -1761,23 +1761,29 @@ function showAdmTab(id,btn){
   btn.classList.add('on');document.getElementById('adm-'+id).classList.add('on');
 }
 function refreshAdmin(){
-  document.getElementById('adm-ac').textContent=ARTS.length;
-  document.getElementById('adm-sc').textContent=SUBS.length;
-  document.getElementById('adm-apc').textContent=APPS.length;
+  var acEl=document.getElementById('adm-ac');if(acEl)acEl.textContent=ARTS.length;
+  var scEl=document.getElementById('adm-sc');if(scEl)scEl.textContent=SUBS.length;
+  var apcEl=document.getElementById('adm-apc');if(apcEl)apcEl.textContent=APPS.length;
   var al=document.getElementById('adm-art-list');
   if(al)al.innerHTML=ARTS.length?ARTS.map(function(a){
-    return '<div class="ala"><div class="ala-info"><div class="ala-title">'+a.title+(a.featured?'<span class="chip">Featured</span>':'')+'</div><div class="ala-meta">'+tlabel(a.team)+' &middot; '+a.date+'</div></div>'
-      +'<div class="ala-btns"><button class="ala-btn" onclick="toggleFeat(\''+a.id+'\')">'+( a.featured?'Unfeature':'Feature')+'</button>'
-      +'<button class="ala-btn" onclick="editArt(\''+a.id+'\')">Edit</button>'
-      +'<button class="ala-btn del" onclick="delArt(\''+a.id+'\')">Delete</button></div></div>';
-  }).join(''):'<div class="ala"><div class="ala-info" style="color:var(--muted)">No articles yet.</div></div>';
-
+    return '<div class="ala"><div class="ala-info">'
+      +(a.imageUrl?'<img src="'+a.imageUrl+'" style="width:48px;height:36px;object-fit:cover;border:1px solid var(--border);margin-right:.8rem;float:left">':'')
+      +'<div class="ala-title">'+a.title+(a.featured?'<span class="chip">Featured</span>':'')+'</div>'
+      +'<div class="ala-meta">'+tlabel(a.team)+' · '+(a.type==='report'?'Report':'Article')+' · '+a.date+'</div>'
+      +'<div style="clear:both"></div></div>'
+      +'<div class="ala-btns">'
+      +'<button class="ala-btn" onclick="editArt('+JSON.stringify(a.id)+')">Edit</button>'
+      +'<button class="ala-btn" onclick="toggleFeat('+JSON.stringify(a.id)+')">'+(a.featured?'Unfeature':'Feature')+'</button>'
+      +'<button class="ala-btn del" onclick="delArt('+JSON.stringify(a.id)+')">Delete</button>'
+      +'</div></div>';
+  }).join(''):'<div class="ala"><div class="ala-info" style="color:var(--muted)">No articles yet. Use + New Article to publish your first.</div></div>';
   refreshAdminNl();
   refreshAdminPartner();
+  var apl=document.getElementById('app-list-el');
   if(apl)apl.innerHTML=APPS.length?APPS.map(function(a){
-    return '<div class="ala"><div class="ala-info"><div class="ala-title">'+a.name+' &mdash; '+a.role+'</div><div class="ala-meta">'+a.email+' &middot; '+a.team+' &middot; '+a.date+'</div></div>'
-      +'<div class="ala-btns"><button class="ala-btn" onclick="viewApp(\''+a.id+'\')">View</button>'
-      +'<button class="ala-btn del" onclick="delApp(\''+a.id+'\')">Delete</button></div></div>';
+    return '<div class="ala"><div class="ala-info"><div class="ala-title">'+a.name+' — '+a.role+'</div><div class="ala-meta">'+a.email+' · '+a.team+' · '+a.date+'</div></div>'
+      +'<div class="ala-btns"><button class="ala-btn" onclick="viewApp('+JSON.stringify(a.id)+')">View</button>'
+      +'<button class="ala-btn del" onclick="delApp('+JSON.stringify(a.id)+')">Delete</button></div></div>';
   }).join(''):'<div class="ala"><div class="ala-info" style="color:var(--muted)">No applications yet.</div></div>';
 }
 var EDIT_ID=null; // tracks which article is being edited
